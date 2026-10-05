@@ -18,6 +18,8 @@ const MAX_PER_ROOM = 2
 const HEARTBEAT_MS = 30_000
 /** Comfortably above one photo chunk or preview frame, well below anything abusive. */
 const MAX_RELAY_BYTES = 96 * 1024
+/** Render's free tier sleeps after ~15 idle minutes; ping well inside that. */
+const KEEPALIVE_MS = 10 * 60_000
 
 /** @type {Map<string, Set<import('ws').WebSocket>>} */
 const rooms = new Map()
@@ -77,7 +79,11 @@ function joinRoom(socket, rawCode) {
 
 const httpServer = createServer((req, res) => {
   if (req.url === '/health') {
-    res.writeHead(200, { 'content-type': 'application/json' })
+    res.writeHead(200, {
+      'content-type': 'application/json',
+      // The app pings this from another origin to wake the server early.
+      'access-control-allow-origin': '*',
+    })
     res.end(JSON.stringify({ ok: true, rooms: rooms.size }))
     return
   }
@@ -145,3 +151,14 @@ wss.on('close', () => clearInterval(heartbeat))
 httpServer.listen(PORT, () => {
   console.log(`📸 booth signaling on ws://localhost:${PORT}${PATH}`)
 })
+
+// On Render, keep the free instance awake by hitting our own public URL. The
+// request goes through Render's edge, so it counts as inbound traffic. Render
+// sets RENDER_EXTERNAL_URL itself; everywhere else this is a no-op.
+const publicUrl = process.env.RENDER_EXTERNAL_URL
+if (publicUrl) {
+  const keepAlive = setInterval(() => {
+    fetch(`${publicUrl}/health`).catch(() => {})
+  }, KEEPALIVE_MS)
+  wss.on('close', () => clearInterval(keepAlive))
+}

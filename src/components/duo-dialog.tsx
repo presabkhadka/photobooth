@@ -13,7 +13,7 @@ import {
 import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import type { DuoStatus } from '@/hooks/use-duo'
+import { warmSignal, type DuoStatus } from '@/hooks/use-duo'
 import { CODE_LENGTH, parseBoothCode } from '@/lib/duo-protocol'
 import { cn } from '@/lib/utils'
 
@@ -93,6 +93,10 @@ export function DuoDialog({
   useEffect(() => {
     if (status === 'waiting' && isHost) setMode('invite')
   }, [isHost, status])
+
+  useEffect(() => {
+    if (open) warmSignal()
+  }, [open])
 
   useEffect(() => {
     if (!open) return

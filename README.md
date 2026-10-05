@@ -123,6 +123,17 @@ Two pieces: static files and one small Node process.
 If you would rather host signaling somewhere else entirely, skip step 3 and set
 `VITE_SIGNAL_URL=wss://your-server/rtc` at build time.
 
+**Vercel + Render.** Vercel can't hold a WebSocket open, so the signaling server runs on Render:
+
+1. On Render: New → Blueprint → pick this repo. `render.yaml` sets up a free web service.
+   Check `https://<service>.onrender.com/health` returns `{"ok":true,...}`.
+2. On Vercel: add `VITE_SIGNAL_URL=wss://<service>.onrender.com/rtc` and **redeploy**. Vite bakes
+   env vars in at build time.
+
+Render's free tier sleeps after ~15 idle minutes. The server pings its own public `/health` every
+10 minutes (only when Render's `RENDER_EXTERNAL_URL` is set), which keeps it awake, and the app
+also pings it whenever the collaborative dialog opens.
+
 ## How it's put together
 
 ```

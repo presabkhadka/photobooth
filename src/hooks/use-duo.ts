@@ -70,6 +70,14 @@ function signalUrl() {
   return `${protocol}//${window.location.host}/rtc`
 }
 
+/** Nudge the signaling server awake (free hosts sleep) before anyone needs it. */
+export function warmSignal() {
+  const url = new URL(signalUrl())
+  url.protocol = url.protocol === 'wss:' ? 'https:' : 'http:'
+  url.pathname = url.pathname.replace(/rtc\/?$/, 'health')
+  fetch(url).catch(() => {})
+}
+
 interface UseDuoOptions {
   /** The local camera feed, shared with the peer once connected. */
   localStream: MediaStream | null
@@ -413,7 +421,11 @@ export function useDuo({ localStream, snapshot, onMessage, onNotice }: UseDuoOpt
 
       socket.onerror = () => {
         setStatus('error')
-        setError('The booth server is not answering. Is `npm run dev` still running?')
+        setError(
+          import.meta.env.DEV
+            ? 'The booth server is not answering. Is `npm run dev` still running?'
+            : 'Could not reach the booth server. It may be waking up, try again in a few seconds.',
+        )
       }
 
       socket.onclose = () => {

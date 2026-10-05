@@ -1,0 +1,9 @@
+# Signaling server for collaborative shots. The app itself lives on Vercel.
+services:
+  - type: web
+    name: wishora-signal
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
