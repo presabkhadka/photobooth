@@ -136,7 +136,7 @@ export function PhotoStrip({
             }}
           >
             <Sparkles style={{ width: cq(16), height: cq(16) }} />
-            Photobooth
+            Wishora
             <Sparkles style={{ width: cq(16), height: cq(16) }} />
           </p>
         </div>

@@ -80,10 +80,10 @@ function ensureFonts() {
     const fonts = (document as Document & { fonts?: FontFaceSet }).fonts
     fontsPromise = fonts
       ? Promise.all([
-          fonts.load('700 46px Caveat'),
-          fonts.load('600 19px "Space Grotesk"'),
-          fonts.load('400 16px Bungee'),
-        ]).catch(() => undefined)
+        fonts.load('700 46px Caveat'),
+        fonts.load('600 19px "Space Grotesk"'),
+        fonts.load('400 16px Bungee'),
+      ]).catch(() => undefined)
       : Promise.resolve()
   }
   return fontsPromise
@@ -91,7 +91,7 @@ function ensureFonts() {
 
 function setLetterSpacing(ctx: CanvasRenderingContext2D, value: string) {
   // Not in every browser's 2D context typings, and a no-op where unsupported.
-  ;(ctx as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = value
+  ; (ctx as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = value
 }
 
 export async function renderStrip(options: StripRenderOptions): Promise<HTMLCanvasElement> {
@@ -194,7 +194,7 @@ export async function renderStrip(options: StripRenderOptions): Promise<HTMLCanv
   ctx.font = '400 15px Bungee, sans-serif'
   ctx.globalAlpha = 0.55
   setLetterSpacing(ctx, '2px')
-  ctx.fillText('★ PHOTOBOOTH ★', centerX, footerTop + (trimmed ? 128 : 92))
+  ctx.fillText('★ WISHORA ★', centerX, footerTop + (trimmed ? 128 : 92))
   ctx.globalAlpha = 1
   setLetterSpacing(ctx, '0px')
 

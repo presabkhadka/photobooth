@@ -121,7 +121,7 @@ export default function App() {
   const timersRef = useRef<number[]>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   /** Lets an incoming "go" start a session that is defined further down. */
-  const runSessionRef = useRef<(config: SessionConfig) => void>(() => {})
+  const runSessionRef = useRef<(config: SessionConfig) => void>(() => { })
   const hostRef = useRef(false)
   const mirrorRef = useRef(mirror)
   const styleRef = useRef<SharedStyle>({ filterId, themeId, caption, grain })
@@ -473,8 +473,8 @@ export default function App() {
   const slots = photos.length > 0 ? photos.length : duoLive ? shots * 2 : shots
   const activeSlot = isRunning
     ? photos.findIndex((photo, index) =>
-        !photo && (!duoLive || index % 2 === (duo.isHost ? 0 : 1)),
-      )
+      !photo && (!duoLive || index % 2 === (duo.isHost ? 0 : 1)),
+    )
     : null
 
   const layoutOptions = useMemo(() => {
